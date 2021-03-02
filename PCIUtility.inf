@@ -44,18 +44,9 @@
 [LibraryClasses]
   UefiApplicationEntryPoint
   UefiLib
-  PcdLib
-
-[FeaturePcd]
-  gEfiMdeModulePkgTokenSpaceGuid.PcdHelloWorldPrintEnable   ## CONSUMES
-
-[Pcd]
-  gEfiMdeModulePkgTokenSpaceGuid.PcdHelloWorldPrintString || gEfiMdeModulePkgTokenSpaceGuid.PcdHelloWorldPrintEnable    ## SOMETIMES_CONSUMES
-  gEfiMdeModulePkgTokenSpaceGuid.PcdHelloWorldPrintTimes  || gEfiMdeModulePkgTokenSpaceGuid.PcdHelloWorldPrintEnable    ## SOMETIMES_CONSUMES
 
 [Protocols]
   gEfiPciRootBridgeIoProtocolGuid     ## add
-  gEfiPciIoProtocolGuid
 
-[UserExtensions.TianoCore."ExtraFiles"]
-  PCIUtilityExtra.uni
+#[UserExtensions.TianoCore."ExtraFiles"]
+#  PCIUtilityExtra.uni
