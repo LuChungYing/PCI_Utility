@@ -1,8 +1,26 @@
 /** @file
+//;******************************************************************************
+//;* Copyright (c) 1983-2021, Insyde Software Corporation. All Rights Reserved.
+//;*
+//;* You may not reproduce, distribute, publish, display, perform, modify, adapt,
+//;* transmit, broadcast, present, recite, release, license or otherwise exploit
+//;* any part of this publication in any form, by any means, without the prior
+//;* written permission of Insyde Software Corporation.
+//;
+//; Abstract:
+//;  To list all pci device, but only for single host bus. And function to modify
+//;  its configeration space.
+//;------------------------------------------------------------------------------
+//;
+//; $Log: $
+//;
+//; Revision History:
+//;*
+//;******************************************************************************
   This sample application is to find all pci device and read or write the configration
   space.
   
-  Copyright (c) 2006 - 2008, Intel Corporation. All rights reserved.<BR>
+  Copyright (c) 2006 - 2021, Intel Corporation. All rights reserved.<BR>
   This program and the accompanying materials                          
   are licensed and made available under the terms and conditions of the BSD License         
   which accompanies this distribution.  The full text of the license may be found at        
@@ -30,7 +48,7 @@
 extern EFI_BOOT_SERVICES  *gBS;
 
 typedef struct{
-  UINT8 ConfigSpaceReg[257];
+  UINT8 ConfigSpaceReg[256];
   UINT32 Bus;
   UINT32 Dev;
   UINT32 Func;
@@ -68,9 +86,6 @@ ModifyPCIconfigspace (
 );
 UINT8
 PutKey (
- IN EFI_INPUT_KEY   Key,
- OUT UINT32 *offset,
- OUT UINT32 *data
 );
 
 EFI_STATUS
@@ -439,11 +454,11 @@ ModifyPCIconfigspace(
   //EFI_PCI_ROOT_BRIDGE_IO_PROTOCOL *Pcirbio;
   //UINTN Count = 1;
   
-  UINT32 data = 0xff;
+  UINT64 data = 0xff;
   UINT32 t;
   //UINT32 Dword;
   //UINT8 tem;
-  UINT32 offset = 0;
+  UINT64 offset = 0;
   UINTN i;
   UINT32 n[3] = {2,4,8};
   
@@ -466,19 +481,22 @@ ModifyPCIconfigspace(
   if (mode == 0){
     for (i=0;i<n[0];i++){
       Status = GetKey (&Key);
-      PutKey(Key, 0,&data);
+      if(PutKey(Key, 0,&data) == 1)
+        i--;
       }
     }
   else if (mode == 1){
     for (i=0;i<n[1];i++){
       Status = GetKey (&Key);
-      PutKey(Key, 0,&data);
+      if(PutKey(Key, 0,&data) == 1)
+        i--;
       }
     }
   else {
     for (i=0;i<n[2];i++){
       Status = GetKey (&Key);
-      PutKey(Key, 0,&data);
+      if(PutKey(Key, 0,&data) == 1)
+        i--;
       }
   }
   Print(L"\n%d %d\n",offset, data);
@@ -557,11 +575,11 @@ ModifyPCIconfigspace(
 UINT8
 PutKey(
  IN EFI_INPUT_KEY   Key,
- OUT UINT32 *offset,
- OUT UINT32 *data
+ OUT UINT64 *offset,
+ OUT UINT64 *data
 )
 {
-  UINT32 *buff;
+  UINT64 *buff;
   if (offset != NULL)
     buff = offset;
   else
